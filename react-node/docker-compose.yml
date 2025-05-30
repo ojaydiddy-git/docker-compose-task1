@@ -1,13 +1,38 @@
 version: '3.8'
 
 services:
-  server:
-    image: node:18
-    working_dir: /app
-    volumes:
-      - ./server:/app
-    command: npm start
+  node-api:
+    build:
+      context: ./server
+      dockerfile: dockerfile
     ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
+      - "5000:5000"
+    networks:
+      - app-net
+
+  react-app:
+    build:
+      context: ./client
+      dockerfile: sdockerfile
+    depends_on:
+      - node-api
+    networks:
+      - app-net
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx.config:/etc/nginx/nginx.conf
+    depends_on:
+      - react-app
+    networks:
+      - app-net
+
+networks:
+  app-net:
