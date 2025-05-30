@@ -1,9 +1,11 @@
 const express = require('express');
 const app = express();
-const port = 5000;
-app.get('/api', (req, res) => {
-  res.json({ message: "Hello from Node.js API!" });
+const PORT = 5000;
+
+app.get('/', (req, res) => {
+  res.send('Hello from Node.js server!');
 });
-app.listen(port, () => {
-  console.log(`Node API running on http://localhost:${port}`);
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
